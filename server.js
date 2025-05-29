@@ -157,17 +157,17 @@ app.post("/api/subscribe", async (req, res) => {
 
     console.log("Making request to Zoho API...");
 
-    // Prepare the request body
+    // Prepare the request body - FIXED FORMAT
+    const contactData = {
+      "Contact Email": email,
+      "First Name": "",
+      "Last Name": "",
+    };
+
     const requestBody = new URLSearchParams({
       listkey: process.env.ZOHO_LIST_KEY,
-      contactinfo: JSON.stringify({
-        "Contact Email": email,
-        "First Name": "", // Optional
-        "Last Name": "", // Optional
-        Source: "Website Newsletter",
-        "Signup Date": new Date().toISOString(),
-      }),
-      resfmt: "JSON", // Explicitly request JSON format
+      contactinfo: JSON.stringify(contactData),
+      resfmt: "JSON",
     });
 
     console.log("Request body prepared");
@@ -201,16 +201,16 @@ app.post("/api/subscribe", async (req, res) => {
         try {
           accessToken = await refreshZohoToken();
 
-          // Retry the request with new token
+          // Retry the request with new token - FIXED FORMAT
+          const retryContactData = {
+            "Contact Email": email,
+            "First Name": "",
+            "Last Name": "",
+          };
+
           const retryBody = new URLSearchParams({
             listkey: process.env.ZOHO_LIST_KEY,
-            contactinfo: JSON.stringify({
-              "Contact Email": email,
-              "First Name": "",
-              "Last Name": "",
-              Source: "Website Newsletter",
-              "Signup Date": new Date().toISOString(),
-            }),
+            contactinfo: JSON.stringify(retryContactData),
             resfmt: "JSON",
           });
 
